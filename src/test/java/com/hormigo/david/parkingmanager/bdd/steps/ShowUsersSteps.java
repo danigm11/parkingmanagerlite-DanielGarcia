@@ -45,12 +45,12 @@ public class ShowUsersSteps extends CucumberConfiguration {
 
     }
 
-    @When("el usuario hace click sobre el boton de Usuarios")
+    @When("el usuario hace click sobre el botón de Usuarios")
     public void clickUserButton(){
 
     }
 
-    @Then("la lista de usuarios se muestra")
+    @Then("se muestran todos los usuarios del sistema")
     public void navigateToUsersList(){
 
     }
