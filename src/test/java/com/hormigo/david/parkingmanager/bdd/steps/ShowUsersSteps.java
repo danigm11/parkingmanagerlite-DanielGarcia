@@ -36,13 +36,14 @@ public class ShowUsersSteps extends CucumberConfiguration {
 
     @Given("un usuario esta en la pagina inicial")
     public void openHome() {
-
+        // TODO: Abrir pagina inicial
 
 
     }
 
     @When("el usuario hace click sobre el botón de Usuarios")
     public void clickUserButton(){
+        // TODO:
 
     }
 
