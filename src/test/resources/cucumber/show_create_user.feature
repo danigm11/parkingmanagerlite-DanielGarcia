@@ -1,7 +1,8 @@
-Feature: Gestion de usuarios
+# language: es
+Característica: Gestion de usuarios
   
 
-  Scenario: Mostrar todos los usuarios
-    Given Un usuario esta en la pagina inicial
-    When El usuario hace click sobre el boton de Usuarios
-    Then La lista de usuarios se muestra
+  Escenario: Mostrar todos los usuarios
+    Dado un usuario esta en la pagina inicial
+    Cuando el usuario hace click sobre el boton de Usuarios
+    Entonces la lista de usuarios se muestra

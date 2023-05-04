@@ -38,19 +38,19 @@ public class ShowUsersSteps extends CucumberConfiguration {
         
     }
 
-    @Given("Un usuario esta en la pagina inicial")
+    @Given("un usuario esta en la pagina inicial")
     public void openHome() {
 
 
 
     }
 
-    @When("El usuario hace click sobre el boton de Usuarios")
+    @When("el usuario hace click sobre el boton de Usuarios")
     public void clickUserButton(){
 
     }
 
-    @Then("La lista de usuarios se muestra")
+    @Then("la lista de usuarios se muestra")
     public void navigateToUsersList(){
 
     }
