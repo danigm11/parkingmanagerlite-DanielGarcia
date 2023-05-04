@@ -1,5 +1,6 @@
 package com.hormigo.david.parkingmanager.user.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
@@ -20,9 +21,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Iterable<User> getAll() {
+    public List<User> getAll() {
 
-        return this.repository.findAll();
+        return (List<User>) this.repository.findAll();
     }
     @Override
     public User register(UserDao userDao) throws UserExistsException {
