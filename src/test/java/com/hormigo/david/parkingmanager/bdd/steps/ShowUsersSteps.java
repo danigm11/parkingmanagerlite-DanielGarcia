@@ -27,31 +27,33 @@ public class ShowUsersSteps extends CucumberConfiguration {
     private UserService userService;
     @Value("${local.server.port}")
     private  int port;
-    private static ChromeDriver chromeDriver;
+    private static ChromeDriver driver;
     @BeforeAll
     public static void prepareWebDriver() {
 
         System.setProperty("webdriver.chrome.driver","C:\\ChromeDriver\\chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
-        chromeDriver = new ChromeDriver(options);
+        driver = new ChromeDriver(options);
         
     }
 
     @Given("un usuario esta en la pagina inicial")
     public void openHome() {
-
+        driver.get("http://localhost:" + port + "/");
 
 
     }
 
     @When("el usuario hace click sobre el botón de Usuarios")
     public void clickUserButton(){
+        driver.findElement(By.id("to-users-link")).click();
 
     }
 
     @Then("se muestran todos los usuarios del sistema")
     public void navigateToUsersList(){
-
+        String currentUrl = driver.getCurrentUrl();
+        assertTrue(currentUrl.contains("/users"));
     }
 }
