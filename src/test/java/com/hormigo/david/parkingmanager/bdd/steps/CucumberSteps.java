@@ -45,11 +45,6 @@ public class CucumberSteps extends CucumberConfiguration {
 
     }
 
-    @Given("un administrador esta en el formulario de creación")
-    public void openUserCreateForm()
-    {
-        driver.get("http://localhost:" + port + "/createUser");
-    }
 
 
 
@@ -64,4 +59,49 @@ public class CucumberSteps extends CucumberConfiguration {
         String currentUrl = driver.getCurrentUrl();
         assertTrue(currentUrl.contains("/users"));
     }
+
+    @When("el usuario hace click sobre el botón de Sorteos")
+    public void clickDrawButton(){
+        driver.findElement(By.id("to-draws-link")).click();
+
+    }
+    @Then("se muestran todos los sorteos del sistema")
+    public void navigateToDrawsList(){
+        String currentUrl = driver.getCurrentUrl();
+        assertTrue(currentUrl.contains("/draws"));
+    }
+
+    @Given("un usuario esta en la lista de sorteos")
+    public void openDrawCreateForm()
+    {
+        driver.get("http://localhost:" + port + "/draws");
+    }
+
+    @When("el usuario hace click sobre el botón de crear Sorteos")
+    public void clickDrawCreateButton(){
+        driver.findElement(By.id("newdraw")).click();
+
+    }
+    @Then("se muestra el formulario de creación de sorteos")
+    public void navigateToDrawsForm(){
+        String currentUrl = driver.getCurrentUrl();
+        assertTrue(currentUrl.contains("/newDraw"));
+    }
+    @Given("un usuario esta en la lista de usuarios")
+    public void openUserCreateForm()
+    {
+      driver.get("http://localhost:" + port + "/users");
+    }
+
+    @When("el usuario hace click sobre el botón de crear Usuarios")
+    public void clickUserCreateButton(){
+        driver.findElement(By.id("users-button-create")).click();
+
+    }
+    @Then("se muestra el formulario de creación de usuarios")
+    public void navigateToUsersForm(){
+        String currentUrl = driver.getCurrentUrl();
+        assertTrue(currentUrl.contains("/newUser"));
+    }
+    
 }
