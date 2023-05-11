@@ -9,3 +9,7 @@ Característica: Gestion de usuarios
     Y pulso el botón de Crear
     Entonces se navega a la lista
     Y existe el usuario
+Característica: Lista de sorteos
+  Escenario: Mostrar lista de sorteos
+    Dado un administrador esta en la lista de sorteos
+    Entonces se muestra la lista
