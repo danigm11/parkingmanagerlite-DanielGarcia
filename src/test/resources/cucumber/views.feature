@@ -7,7 +7,7 @@ Característica: Gestion de navegacion
 
   Escenario: Mostrar lista de usuarios
     Dado un usuario esta en la pagina inicial
-    Entonces se muestran todos los usuarios del sistema
+    Entonces se muestra la página de la lista de usuarios 
 
   Escenario: Mostrar lista de sorteos
     Dado un usuario esta en la pagina inicial

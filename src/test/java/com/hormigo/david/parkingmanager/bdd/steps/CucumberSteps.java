@@ -1,7 +1,8 @@
 package com.hormigo.david.parkingmanager.bdd.steps;
 
-
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.openqa.selenium.By;
@@ -23,86 +24,111 @@ import io.cucumber.spring.CucumberContextConfiguration;
 @CucumberContextConfiguration
 public class CucumberSteps extends CucumberConfiguration {
 
-    @MockBean
-    private UserService userService;
-    @Value("${local.server.port}")
-    private  int port;
-    private static ChromeDriver driver;
-    @BeforeAll
-    public static void prepareWebDriver() {
+  @MockBean
+  private UserService userService;
+  @Value("${local.server.port}")
+  private int port;
+  private static ChromeDriver driver;
 
-        System.setProperty("webdriver.chrome.driver","C:\\ChromeDriver\\chromedriver.exe");
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--remote-allow-origins=*");
-        driver = new ChromeDriver(options);
-        
-    }
+  @BeforeAll
+  public static void prepareWebDriver() {
 
-    @Given("un usuario esta en la pagina inicial")
-    public void openHome() {
-        driver.get("http://localhost:" + port + "/");
+    System.setProperty("webdriver.chrome.driver", "C:\\ChromeDriver\\chromedriver.exe");
+    ChromeOptions options = new ChromeOptions();
+    options.addArguments("--remote-allow-origins=*");
+    driver = new ChromeDriver(options);
 
+  }
 
-    }
-    @When("el usuario hace click sobre el botón de Usuarios")
-    public void clickUserButton(){
-        driver.findElement(By.id("to-users-link")).click();
+  @Given("un usuario esta en la pagina inicial")
+  public void openHome() {
+    driver.get("http://localhost:" + port + "/");
 
-    }
+  }
 
-    @Then("se muestran todos los usuarios del sistema")
-    public void navigateToUsersList(){
-        String currentUrl = driver.getCurrentUrl();
-        assertTrue(currentUrl.contains("/users"));
-    }
+  @When("el usuario hace click sobre el botón de Usuarios")
+  public void clickUserButton() {
+    driver.findElement(By.id("to-users-link")).click();
 
-    @When("el usuario hace click sobre el botón de Sorteos")
-    public void clickDrawButton(){
-        driver.findElement(By.id("to-draws-link")).click();
+  }
 
-    }
-    @Then("se muestran todos los sorteos del sistema")
-    public void navigateToDrawsList(){
-        String currentUrl = driver.getCurrentUrl();
-        assertTrue(currentUrl.contains("/draws"));
-    }
+  @Then("se muestran todos los usuarios del sistema")
+  public void navigateToUsersList() {
+    String currentUrl = driver.getCurrentUrl();
+    assertTrue(currentUrl.contains("/users"));
+  }
 
-    @Given("un usuario esta en la lista de sorteos")
-    public void openDrawCreateForm()
-    {
-        driver.get("http://localhost:" + port + "/draws");
-    }
+  @When("el usuario hace click sobre el botón de Sorteos")
+  public void clickDrawButton() {
+    driver.findElement(By.id("to-draws-link")).click();
 
-    @When("el usuario hace click sobre el botón de crear Sorteos")
-    public void clickDrawCreateButton(){
-        driver.findElement(By.id("newdraw")).click();
+  }
 
-    }
-    @Then("se muestra el formulario de creación de sorteos")
-    public void navigateToDrawsForm(){
-        String currentUrl = driver.getCurrentUrl();
-        assertTrue(currentUrl.contains("/newDraw"));
-    }
-    @Given("un usuario esta en la lista de usuarios")
-    public void openUserCreateForm()
-    {
-      driver.get("http://localhost:" + port + "/users");
-    }
-    @When("el usuario hace click sobre el botón de crear Usuarios")
-    public void clickUserCreateButton(){
-        driver.findElement(By.id("users-button-create")).click();
+  @Then("se muestran todos los sorteos del sistema")
+  public void navigateToDrawsList() {
+    String currentUrl = driver.getCurrentUrl();
+    assertTrue(currentUrl.contains("/draws"));
+  }
 
-    }
-    @Then("se muestra el formulario de creación de usuarios")
-    public void navigateToUsersForm(){
-        String currentUrl = driver.getCurrentUrl();
-        assertTrue(currentUrl.contains("/newUser"));
-    }
-    @Then("se muestra la página de inicio")
-    public void showIndex(){
-        String currentUrl = driver.getCurrentUrl();
-        assertTrue(currentUrl.contains("/"));
-    }
+  @Given("un usuario esta en la lista de sorteos")
+  public void openDrawCreateForm() {
+    driver.get("http://localhost:" + port + "/draws");
+  }
 
-    
+  @When("el usuario hace click sobre el botón de crear Sorteos")
+  public void clickDrawCreateButton() {
+    driver.findElement(By.id("newdraw")).click();
+
+  }
+
+  @Then("se muestra el formulario de creación de sorteos")
+  public void navigateToDrawsForm() {
+    String currentUrl = driver.getCurrentUrl();
+    assertTrue(currentUrl.contains("/newDraw"));
+  }
+
+  @Given("un usuario esta en la lista de usuarios")
+  public void openUserCreateForm() {
+    driver.get("http://localhost:" + port + "/users");
+  }
+
+  @When("el usuario hace click sobre el botón de crear Usuarios")
+  public void clickUserCreateButton() {
+    driver.findElement(By.id("users-button-create")).click();
+
+  }
+
+  @Then("se muestra el formulario de creación de usuarios")
+  public void navigateToUsersForm() {
+    String currentUrl = driver.getCurrentUrl();
+    assertTrue(currentUrl.contains("/newUser"));
+  }
+
+  @Then("se muestra la página de la lista de usuarios")
+  public void showUserList() {
+    String url = ("http://localhost:" + port + "/users");
+    driver.get(url);
+    String titulo = driver.getTitle();
+    WebElement createButton = driver.findElement(By.id("to-draws-link"));
+    WebElement createButton2 = driver.findElement(By.id("to-users-link"));
+    WebElement createButton3 = driver.findElement(By.id("to-home-link"));
+    WebElement createButton4 = driver.findElement(By.id("users-button-create"));
+    assertAll("Comprobacion lista usuarios",
+        () -> {
+          assertEquals("Usuarios", titulo);
+        },
+        () -> {
+          assertNotNull(createButton);
+        },
+        () -> {
+          assertNotNull(createButton2);
+        },
+        () -> {
+          assertNotNull(createButton3);
+        },
+        () -> {
+          assertNotNull(createButton4);
+        });
+  }
+
 }
