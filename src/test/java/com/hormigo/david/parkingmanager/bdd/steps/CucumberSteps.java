@@ -44,10 +44,6 @@ public class CucumberSteps extends CucumberConfiguration {
 
 
     }
-
-
-
-
     @When("el usuario hace click sobre el botón de Usuarios")
     public void clickUserButton(){
         driver.findElement(By.id("to-users-link")).click();
@@ -92,7 +88,6 @@ public class CucumberSteps extends CucumberConfiguration {
     {
       driver.get("http://localhost:" + port + "/users");
     }
-
     @When("el usuario hace click sobre el botón de crear Usuarios")
     public void clickUserCreateButton(){
         driver.findElement(By.id("users-button-create")).click();
@@ -103,5 +98,11 @@ public class CucumberSteps extends CucumberConfiguration {
         String currentUrl = driver.getCurrentUrl();
         assertTrue(currentUrl.contains("/newUser"));
     }
+    @Then("se muestra la página de inicio")
+    public void showIndex(){
+        String currentUrl = driver.getCurrentUrl();
+        assertTrue(currentUrl.contains("/"));
+    }
+
     
 }
