@@ -106,29 +106,146 @@ public class CucumberSteps extends CucumberConfiguration {
 
   @Then("se muestra la página de la lista de usuarios")
   public void showUserList() {
-    String url = ("http://localhost:" + port + "/users");
-    driver.get(url);
+    
     String titulo = driver.getTitle();
     WebElement createButton = driver.findElement(By.id("to-draws-link"));
     WebElement createButton2 = driver.findElement(By.id("to-users-link"));
-    WebElement createButton3 = driver.findElement(By.id("to-home-link"));
+    WebElement createButton3 = driver.findElement(By.id("user-list-table"));
     WebElement createButton4 = driver.findElement(By.id("users-button-create"));
     assertAll("Comprobacion lista usuarios",
         () -> {
           assertEquals("Usuarios", titulo);
         },
         () -> {
-          assertNotNull(createButton);
+          assert(createButton2.isDisplayed());
         },
         () -> {
-          assertNotNull(createButton2);
+          assert(createButton.isDisplayed());
         },
         () -> {
-          assertNotNull(createButton3);
+          assert(createButton3.isDisplayed());
         },
         () -> {
-          assertNotNull(createButton4);
+          assert(createButton4.isDisplayed());
         });
   }
+  @Then("se muestra la página de la lista de sorteos")
+  public void showDrawList() {
+    String url = ("http://localhost:" + port + "/draws");
+    driver.get(url);
+    String titulo = driver.getTitle();
+    WebElement createButton = driver.findElement(By.id("to-draws-link"));
+    WebElement createButton2 = driver.findElement(By.id("to-users-link"));
+    WebElement createButton3 = driver.findElement(By.id("draw-list-table"));
+    WebElement createButton4 = driver.findElement(By.id("newdraw"));
+    
+    assertAll("Comprobacion lista sorteos",
+        () -> {
+          assertEquals("Sorteos", titulo);
+        },
+        () -> {
+          assert(createButton.isDisplayed());
+        },
+        () -> {
+          assert(createButton2.isDisplayed());
+        },
+        () -> {
+          assert(createButton3.isDisplayed());
+        },
+        () -> {
+          assert(createButton4.isDisplayed());
+        });
+  }
+  @Given("un usuario esta en la pagina de creación de sorteos")
+  public void openDrawForm() {
+    driver.get("http://localhost:" + port + "/newDraw");
 
+  }
+  @Given("un usuario esta en la pagina de creación de usuarios")
+  public void openUserForm() {
+    driver.get("http://localhost:" + port + "/newUser");
+
+  }
+  @Then("se muestra la página del formulario de creación de sorteos")
+  public void showDrawForm() {
+    
+    String titulo = driver.getTitle();
+    WebElement createButton = driver.findElement(By.id("to-draws-link"));
+    WebElement createButton2 = driver.findElement(By.id("to-users-link"));
+    WebElement createButton3 = driver.findElement(By.id("draw-field-description"));
+    WebElement createButton4 = driver.findElement(By.id("draw-button-submit"));
+    
+    assertAll("Comprobacion formulario de sorteos",
+        () -> {
+          assertEquals("Crear nuevo sorteo", titulo);
+        },
+        () -> {
+          assert(createButton.isDisplayed());
+        },
+        () -> {
+          assert(createButton2.isDisplayed());
+        },
+        () -> {
+          assert(createButton3.isDisplayed());
+        },
+        () -> {
+          assert(createButton4.isDisplayed());
+        });
+  }
+  @Then("se muestra la página del formulario de creación de usuarios")
+  public void showUserForm() {
+    
+    String titulo = driver.getTitle();
+    WebElement createButton = driver.findElement(By.id("user-create-button-submit"));
+    WebElement createButton2 = driver.findElement(By.id("user-create-field-lastname1"));
+    WebElement createButton3 = driver.findElement(By.id("user-create-field-email"));
+    WebElement createButton4 = driver.findElement(By.id("user-create-field-name"));
+    WebElement createButton5 = driver.findElement(By.id("user-create-field-lastname1"));
+    WebElement createButton6 = driver.findElement(By.id("user-create-field-lastname2"));
+    
+    assertAll("Comprobacion formulario de usuarios",
+        () -> {
+          assertEquals("Crear nuevo usuario", titulo);
+        },
+        () -> {
+          assert(createButton.isDisplayed());
+        },
+        () -> {
+          assert(createButton2.isDisplayed());
+        },
+        () -> {
+          assert(createButton3.isDisplayed());
+        },
+        () -> {
+          assert(createButton4.isDisplayed());
+        },
+        () -> {
+          assert(createButton5.isDisplayed());
+        },
+        () -> {
+          assert(createButton6.isDisplayed());
+        });
+  }
+  @Then("se muestra la página principal")
+  public void showIndex() {
+    
+    String titulo = driver.getTitle();
+    WebElement createButton = driver.findElement(By.id("to-draws-link"));
+    WebElement createButton2 = driver.findElement(By.id("to-users-link"));
+    WebElement createButton3 = driver.findElement(By.id("to-home-link"));
+    
+    assertAll("Comprobacion inicio",
+        () -> {
+          assertEquals("CPIFP Los Camaleones", titulo);
+        },
+        () -> {
+          assert(createButton.isDisplayed());
+        },
+        () -> {
+          assert(createButton2.isDisplayed());
+        },
+        () -> {
+          assert(createButton3.isDisplayed());
+        });
+  }
 }
