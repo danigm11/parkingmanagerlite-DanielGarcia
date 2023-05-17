@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mockito.InjectMocks;
+import org.mockito.verification.VerificationMode;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -72,6 +73,11 @@ public class CucumberSteps extends CucumberConfiguration {
 
     }
 
+    @Dado("el correo {} no esta asignado a otro usuario")
+    public void mockUserNotExists(String email){
+        when(mockedUserService.userExists(email)).thenReturn(false);
+    }
+
     private String getUrlFromPageName(String pageName) {
         String endPoint = "";
         switch (pageName) {
@@ -93,6 +99,12 @@ public class CucumberSteps extends CucumberConfiguration {
         return getUrlFromEndPoint(endPoint);
     }
 
+    @Cuando("relleno el campo {} con {}")
+    public void populateField(String fieldName,String fieldValue){
+        WebElement inputField = driver.findElement(By.id(getFieldIdFromName(fieldName)));
+        inputField.sendKeys(fieldValue);
+    }
+
     @Cuando("el usuario hace click sobre el botón de {}")
     public void clickButton(String buttonName) {
         String buttonId = "";
@@ -103,7 +115,9 @@ public class CucumberSteps extends CucumberConfiguration {
             case "Sorteos":
                 buttonId = "to-draws-link";
                 break;
-
+            case "crear usuario":
+                buttonId = "user-create-button-submit";
+                break;
             default:
                 break;
         }
@@ -114,6 +128,11 @@ public class CucumberSteps extends CucumberConfiguration {
     public void isInPage(String pageName) {
 
         assertTrue(driver.getCurrentUrl().equals(getUrlFromPageName(pageName)));
+    }
+
+    @Entonces("se ha persistido el usuario en la base de datos")
+    public void checkUserWasSaved(){
+        verify(mockedRepository.save(any(User.class)));
     }
 
     @Entonces("se muestra un campo de {}")
@@ -131,7 +150,15 @@ public class CucumberSteps extends CucumberConfiguration {
             case "correo electrónico":
                 fieldId = "user-create-field-email";
                 break;
-        
+            case "nombre":
+            fieldId = "user-create-field-name";
+            break;
+            case "primer apellido":
+            fieldId = "user-create-field-lastname1";
+            break;
+            case "segundo apellido":
+            fieldId = "user-create-field-lastname2";
+            break;
             default:
                 break;
         }
