@@ -1,4 +1,4 @@
-package com.hormigo.david.parkingmanager.api;
+package com.hormigo.david.parkingmanager.core.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;

@@ -1,4 +1,4 @@
-package com.hormigo.david.parkingmanager.api;
+package com.hormigo.david.parkingmanager.core.api;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -7,6 +7,7 @@ import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
 import com.hormigo.david.parkingmanager.core.exceptions.UserDoesNotExistsException;
+import com.hormigo.david.parkingmanager.user.adapter.UserRestController;
 import com.hormigo.david.parkingmanager.user.domain.User;
 
 @Component
