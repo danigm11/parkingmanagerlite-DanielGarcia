@@ -4,15 +4,17 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-
+import org.apache.tomcat.util.bcel.Const;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +27,11 @@ import com.hormigo.david.parkingmanager.user.domain.User;
 import com.hormigo.david.parkingmanager.user.domain.UserDao;
 import com.hormigo.david.parkingmanager.user.service.UserService;
 
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 
 @RestController
 public class UserRestController {
@@ -63,20 +69,36 @@ public class UserRestController {
      * @throws UserExistsException
      */
     @PostMapping("/api/users")
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserDao userDao) throws UserExistsException {
-        {
-            EntityModel<User> entityModel = this.userModelAssembler.toModel(this.userService.register(userDao));
-
-            return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(entityModel);
-
+    public ResponseEntity<?> createUser(@RequestBody UserDao userDao) throws UserExistsException {
+        User createdUser;
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        Set<ConstraintViolation<UserDao>> violations = validator.validate(userDao);
+        String errors = "";
+        for (ConstraintViolation<UserDao> violation :violations) {
+            errors = errors.concat(violation.getMessage()+"\n");
         }
+
+        if (!errors.isBlank()) {
+            return ResponseEntity.unprocessableEntity().body(errors);
+        }
+
+        createdUser = this.userService.register(userDao);
+        EntityModel<User> entityModel = this.userModelAssembler.toModel(createdUser);
+
+        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(entityModel);
 
     }
 
     @DeleteMapping("/api/users/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable long id) throws UserDoesNotExistsException {
         this.userService.deleteUserById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/api/users/{id}")
+    public ResponseEntity<?> updateUser() {
         return ResponseEntity.noContent().build();
     }
 }
