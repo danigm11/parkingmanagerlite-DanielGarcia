@@ -1,5 +1,7 @@
 package com.hormigo.david.parkingmanager.bdd.steps;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -7,6 +9,7 @@ import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,6 +30,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.hormigo.david.parkingmanager.bdd.CucumberConfiguration;
 import com.hormigo.david.parkingmanager.core.exceptions.UserExistsException;
+import com.hormigo.david.parkingmanager.draw.domain.Draw;
+import com.hormigo.david.parkingmanager.draw.domain.DrawRepository;
+import com.hormigo.david.parkingmanager.draw.service.DrawServiceImpl;
 import com.hormigo.david.parkingmanager.user.domain.Role;
 import com.hormigo.david.parkingmanager.user.domain.User;
 import com.hormigo.david.parkingmanager.user.domain.UserRepository;
@@ -50,11 +56,18 @@ public class CucumberSteps extends CucumberConfiguration {
         System.setProperty("webdriver.chrome.driver", "C:\\ChromeDriver\\chromedriver.exe");
 
     }
+
     @MockBean
     private UserRepository mockedRepository;
     @Spy
     @InjectMocks
     private UserServiceImpl mockedUserService;
+
+    @MockBean
+    private DrawRepository mockedDrawRepository;
+    @Spy
+    @InjectMocks
+    private DrawServiceImpl mockedDrawService;
 
     @Value("${local.server.port}")
     private int port;
@@ -67,6 +80,8 @@ public class CucumberSteps extends CucumberConfiguration {
         driver = new ChromeDriver(options);
         clearInvocations(mockedRepository);
         clearInvocations(mockedUserService);
+        clearInvocations(this.mockedDrawRepository);
+        clearInvocations(this.mockedDrawService);
     }
 
     @After
@@ -75,7 +90,7 @@ public class CucumberSteps extends CucumberConfiguration {
 
     }
 
-    @Dado("un usuario esta en la pagina {}")
+    @Dado("esta en la pagina {}")
     public void openPage(String pageName) {
         driver.get(getUrlFromPageName(pageName));
 
@@ -88,6 +103,12 @@ public class CucumberSteps extends CucumberConfiguration {
         
     }
 
+    @Dado("el correo {} existe en la base de datos")
+    public void mockUserExists(String email){
+        when(mockedUserService.userExists(email)).thenReturn(true);
+        when(mockedRepository.findByEmail(email)).thenReturn(new User(email,"David","Hormigo","Ramírez",Role.PROFESSOR));
+        
+    }
 
     @Cuando("relleno el campo {} con {}")
     public void populateField(String fieldName, String fieldValue) {
@@ -108,13 +129,16 @@ public class CucumberSteps extends CucumberConfiguration {
             case "crear usuario":
                 buttonId = "user-create-button-submit";
                 break;
+            case "crear sorteo":
+                buttonId = "draw-button-submit";
+                break;
             default:
                 break;
         }
         driver.findElement(By.id(buttonId)).click();
     }
 
-    @Entonces("esta en la pagina de {}")
+    @Entonces("la url de la pagina {} es correcta")
     public void isInPage(String pageName) {
 
         assertTrue(driver.getCurrentUrl().equals(getUrlFromPageName(pageName)));
@@ -125,6 +149,15 @@ public class CucumberSteps extends CucumberConfiguration {
         verify(mockedRepository, times(1)).save(any(User.class));
     }
 
+    @Entonces("se ha persistido el sorteo en la base de datos")
+    public void checkDrawWasSaved() {
+        verify(mockedDrawRepository, times(1)).save(any(Draw.class));
+    }
+
+    @Entonces("no se ha persistido el usuario en la base de datos")
+    public void checkUserWasNotSaved() {
+        verify(mockedRepository, never()).save(any(User.class));
+    }
 
     @Entonces("se muestra un campo de {}")
     public void fieldIsDisplayed(String fieldName) {
@@ -132,6 +165,18 @@ public class CucumberSteps extends CucumberConfiguration {
         WebElement field = driver.findElement(By.id(fieldId));
 
         assertTrue(field.isDisplayed());
+    }
+
+    @Entonces("se muestra un botón de creación")
+    public void createButtondIsDisplayed() {
+        WebElement button = driver.findElement(By.id("user-create-button-submit"));
+        assertAll("Create button",
+                () -> {
+                    assertEquals(button.getTagName().toLowerCase(), "button");
+                },
+                () -> {
+                    assertTrue(button.isDisplayed());
+                });
     }
 
     private String getUrlFromPageName(String pageName) {
@@ -148,6 +193,9 @@ public class CucumberSteps extends CucumberConfiguration {
                 break;
             case "creación de usuarios":
                 endPoint = "/newUser";
+                break;
+            case "creación de sorteos":
+                endPoint = "/newDraw";
                 break;
             default:
                 break;
@@ -169,6 +217,9 @@ public class CucumberSteps extends CucumberConfiguration {
                 break;
             case "segundo apellido":
                 fieldId = "user-create-field-lastname2";
+                break;
+            case "descripción":
+                fieldId = "draw-field-description";
                 break;
             default:
                 break;
