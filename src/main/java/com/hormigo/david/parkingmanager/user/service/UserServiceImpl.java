@@ -54,5 +54,12 @@ public class UserServiceImpl implements UserService {
         
     }
 
+    @Override
+    public User updateUser(UserDao userDao) throws UserDoesNotExistsException {
+        User user = new User();
+        BeanUtils.copyProperties(userDao, user);
+        return this.repository.save(user);
+    }
+
 
 }

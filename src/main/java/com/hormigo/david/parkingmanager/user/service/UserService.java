@@ -13,5 +13,6 @@ public interface UserService {
     public User register(UserDao userDao) throws UserExistsException;
     public boolean userExists(String email);
     public Optional<User> getUser(long id);
-    public void deleteUserById(long id) throws UserDoesNotExistsException, UserDoesNotExistsException ;
+    public void deleteUserById(long id) throws UserDoesNotExistsException;
+    public User updateUser(UserDao user) throws UserDoesNotExistsException;
 }
