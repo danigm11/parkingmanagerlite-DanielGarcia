@@ -6,6 +6,10 @@ Característica: Gestion de usuarios
     Cuando el usuario hace click sobre el botón de Usuarios
     Entonces esta en la pagina de lista de usuarios
 
+  Escenario: Navegación a formulario de usuarios
+    Dado un usuario esta en la lista de usuarios
+    Cuando el usuario hace click sobre el botón de crear Usuarios
+    Entonces esta en la pagina creación de usuarios
   
   Escenario: Comprobar que el formulario de creación de usuarios tiene todos los elementos
     Dado un usuario esta en la pagina creación de usuarios

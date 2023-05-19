@@ -5,6 +5,11 @@ Característica: Gestion de sorteos
     Dado un usuario esta en la pagina inicial
     Cuando el usuario hace click sobre el botón de Sorteos
     Entonces esta en la pagina de lista de sorteos
+
+  Escenario: Navegación a formulario de sorteos
+    Dado un usuario esta en la lista de sorteos
+    Cuando el usuario hace click sobre el botón de crear Sorteos
+    Entonces esta en la pagina creación de sorteos
   
     Escenario: Crear un sorteo correctamente
     Dado un usuario esta en la pagina creación de sorteos
