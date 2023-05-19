@@ -18,6 +18,7 @@ import java.util.Optional;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.mockito.verification.VerificationMode;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -27,6 +28,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.hormigo.david.parkingmanager.bdd.CucumberConfiguration;
+import com.hormigo.david.parkingmanager.core.exceptions.UserExistsException;
+import com.hormigo.david.parkingmanager.draw.domain.Draw;
+import com.hormigo.david.parkingmanager.draw.domain.DrawRepository;
+import com.hormigo.david.parkingmanager.draw.service.DrawServiceImpl;
 import com.hormigo.david.parkingmanager.user.domain.User;
 import com.hormigo.david.parkingmanager.user.domain.UserRepository;
 import com.hormigo.david.parkingmanager.user.service.UserService;
@@ -51,8 +56,15 @@ public class CucumberSteps extends CucumberConfiguration {
     }
     @MockBean
     private UserRepository mockedRepository;
+    @Spy
     @InjectMocks
     private UserServiceImpl mockedUserService;
+
+    @MockBean
+    private DrawRepository mockedRepository2;
+    @Spy
+    @InjectMocks
+    private DrawServiceImpl mockedDrawService;
 
     @Value("${local.server.port}")
     private int port;
@@ -64,29 +76,49 @@ public class CucumberSteps extends CucumberConfiguration {
         driver = new ChromeDriver(options);
         MockitoAnnotations.openMocks(this);
     }
-
+    
     @After
     public void quitDriver() {
         driver.quit();
     
     }
-
+    
     @Dado("un usuario esta en la pagina {}")
     public void openPage(String pageName) {
         driver.get(getUrlFromPageName(pageName));
 
     }
 
-    @Dado("el correo {} no esta asignado a otro usuario")
-    public void mockUserNotExists(String email){
-        when(mockedRepository.findByEmail(email)).thenReturn(null);
-        //when(mockedUserService.userExists(email)).thenReturn(false);
-        
+    @Dado("el correo {} {} esta asignado a otro usuario")
+    public void mockUserNotExists(String email, String eleccion ){
+        switch(eleccion){
+          case "si":{
+            when(mockedUserService.userExists(email)).thenReturn(true);
+            try {
+              doThrow(UserExistsException.class).when(mockedUserService).register(any());
+
+          } catch (final UserExistsException e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+          }
+          }
+          case "no":{
+            //when(mockedRepository.findByEmail(email)).thenReturn(null);
+           when(mockedUserService.userExists(email)).thenReturn(false);
+          }
+        }
     }
+
     @Cuando("relleno el campo {} con {}")
     public void populateField(String fieldName,String fieldValue){
         WebElement inputField = driver.findElement(By.id(getFieldIdFromName(fieldName)));
         inputField.sendKeys(fieldValue);
+    }
+
+    @Cuando("no relleno el campo {}")
+    public void clearField(String fieldName){
+        WebElement inputField = driver.findElement(By.id(getFieldIdFromName(fieldName)));
+        inputField.clear();
     }
 
     @Cuando("el usuario hace click sobre el botón de {}")
@@ -101,6 +133,9 @@ public class CucumberSteps extends CucumberConfiguration {
                 break;
             case "crear usuario":
                 buttonId = "user-create-button-submit";
+                break;
+              case "crear sorteo":
+                buttonId = "draw-button-submit";
                 break;
             default:
                 break;
@@ -117,6 +152,14 @@ public class CucumberSteps extends CucumberConfiguration {
     @Entonces("se ha persistido el usuario en la base de datos")
     public void checkUserWasSaved(){
         verify(mockedRepository,times(1)).save(any(User.class));
+    }
+    @Entonces("se ha persistido el sorteo en la base de datos")
+    public void checkDrawrWasSaved(){
+        verify(mockedRepository2,times(1)).save(any(Draw.class));
+    }
+    @Entonces("no se ha persistido el usuario en la base de datos")
+    public void checkUserWasNotSaved(){
+        verify(mockedRepository,times(0)).save(any(User.class));
     }
 
     @Entonces("se muestra un campo de {}")
@@ -142,6 +185,9 @@ public class CucumberSteps extends CucumberConfiguration {
             case "creación de usuarios":
                 endPoint = "/newUser";
             break;
+            case "creación de sorteos":
+                endPoint = "/newDraw";
+            break;
             default:
                 break;
         }
@@ -162,6 +208,9 @@ public class CucumberSteps extends CucumberConfiguration {
             break;
             case "segundo apellido":
             fieldId = "user-create-field-lastname2";
+            break;
+            case "descripcion":
+            fieldId = "draw-field-description";
             break;
             default:
                 break;
