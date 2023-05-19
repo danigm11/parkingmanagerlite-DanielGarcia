@@ -25,6 +25,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.hormigo.david.parkingmanager.bdd.CucumberConfiguration;
@@ -94,7 +95,8 @@ public class CucumberSteps extends CucumberConfiguration {
         switch(eleccion){
           case "si":{
             when(mockedUserService.userExists(email)).thenReturn(true);
-            try {
+            when(mockedRepository.findByEmail(email)).thenReturn(new User("correo@gmail.com", "David", "Hormigo", null));
+           try {
               doThrow(UserExistsException.class).when(mockedUserService).register(any());
 
           } catch (final UserExistsException e) {
@@ -123,23 +125,7 @@ public class CucumberSteps extends CucumberConfiguration {
 
     @Cuando("el usuario hace click sobre el botón de {}")
     public void clickButton(String buttonName) {
-        String buttonId = "";
-        switch (buttonName) {
-            case "Usuarios":
-                buttonId = "to-users-link";
-                break;
-            case "Sorteos":
-                buttonId = "to-draws-link";
-                break;
-            case "crear usuario":
-                buttonId = "user-create-button-submit";
-                break;
-              case "crear sorteo":
-                buttonId = "draw-button-submit";
-                break;
-            default:
-                break;
-        }
+        String buttonId = getButtonIdFromName(buttonName);
         driver.findElement(By.id(buttonId)).click();
     }
 
@@ -170,10 +156,18 @@ public class CucumberSteps extends CucumberConfiguration {
         assertTrue(field.isDisplayed());
     }
 
+    @Entonces("se muestra un botón de {}")
+    public void buttonIsDisplayed(String buttonName){
+        String buttonId = getButtonIdFromName(buttonName);
+        WebElement button = driver.findElement(By.id(buttonId));
+        
+        assertTrue(button.isDisplayed());
+    }
+
     private String getUrlFromPageName(String pageName) {
         String endPoint = "";
         switch (pageName) {
-            case "inicial":
+            case "inicio":
                 endPoint = "/";
                 break;
             case "lista de usuarios":
@@ -192,6 +186,32 @@ public class CucumberSteps extends CucumberConfiguration {
                 break;
         }
         return getUrlFromEndPoint(endPoint);
+    }
+    private String getButtonIdFromName(String buttonName) {
+    String buttonId = "";
+        switch (buttonName) {
+            case "Usuarios":
+                buttonId = "to-users-link";
+                break;
+            case "Sorteos":
+                buttonId = "to-draws-link";
+                break;
+            case "formulario usuarios":
+                buttonId = "users-button-create";
+                break;
+            case "formulario sorteos":
+                buttonId = "create-draw";
+                break;
+            case "crear usuario":
+                buttonId = "user-create-button-submit";
+                break;
+              case "crear sorteo":
+                buttonId = "draw-button-submit";
+                break;
+            default:
+                break;
+        }
+        return buttonId;
     }
 
     private String getFieldIdFromName(String fieldName) {

@@ -1,15 +1,27 @@
 # language: es
 Característica: Gestion de usuarios
   
+    Escenario: Mostrar página inicial
+    Dado un usuario esta en la pagina inicio
+    Entonces esta en la pagina de inicio
+
+  Escenario: Mostrar lista de usuarios
+    Dado un usuario esta en la pagina lista de usuarios
+    Entonces esta en la pagina de lista de usuarios
+
+  Escenario: Mostrar formulario de usuarios
+    Dado un usuario esta en la pagina creación de usuarios
+    Entonces esta en la pagina de creación de usuarios
+
   Escenario: Navegación a la lista de usuarios
     Dado un usuario esta en la pagina inicial
     Cuando el usuario hace click sobre el botón de Usuarios
     Entonces esta en la pagina de lista de usuarios
 
   Escenario: Navegación a formulario de usuarios
-    Dado un usuario esta en la lista de usuarios
-    Cuando el usuario hace click sobre el botón de crear Usuarios
-    Entonces esta en la pagina creación de usuarios
+    Dado un usuario esta en la pagina lista de usuarios
+    Cuando el usuario hace click sobre el botón de formulario usuarios
+    Entonces esta en la pagina de creación de usuarios
   
   Escenario: Comprobar que el formulario de creación de usuarios tiene todos los elementos
     Dado un usuario esta en la pagina creación de usuarios
@@ -17,7 +29,7 @@ Característica: Gestion de usuarios
     Y se muestra un campo de nombre
     Y se muestra un campo de primer apellido
     Y se muestra un campo de segundo apellido
-    Y se muestra un botón de creación
+    Y se muestra un botón de crear usuario
 
   Escenario: Crear un usuario correctamente
     Dado un usuario esta en la pagina creación de usuarios
