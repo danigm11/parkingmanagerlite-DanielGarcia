@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.tomcat.util.bcel.Const;
+import org.hibernate.NotImplementedYetException;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -28,7 +28,6 @@ import com.hormigo.david.parkingmanager.user.domain.UserDao;
 import com.hormigo.david.parkingmanager.user.service.UserService;
 
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Valid;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
@@ -98,7 +97,8 @@ public class UserRestController {
     }
 
     @PatchMapping("/api/users/{id}")
-    public ResponseEntity<?> updateUser() {
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> updateUser(@PathVariable long id, @RequestBody UserDao userDao) throws UserDoesNotExistsException {
+        this.userService.updateUser(id,userDao);
+        throw new UnsupportedOperationException();
     }
 }

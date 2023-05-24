@@ -14,5 +14,5 @@ public interface UserService {
     public boolean userExists(String email);
     public Optional<User> getUser(long id);
     public void deleteUserById(long id) throws UserDoesNotExistsException;
-    public User updateUser(UserDao user) throws UserDoesNotExistsException;
+    public User updateUser(long id,UserDao user) throws UserDoesNotExistsException;
 }
