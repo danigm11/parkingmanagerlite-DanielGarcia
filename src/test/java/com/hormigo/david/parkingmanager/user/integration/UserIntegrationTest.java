@@ -153,7 +153,6 @@ public class UserIntegrationTest {
         try {
             doThrow(UserExistsException.class).when(userService).register(any());
         } catch (final UserExistsException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
   
@@ -161,7 +160,6 @@ public class UserIntegrationTest {
         final String url = buildUrl("/newUser");
         chromeDriver.get(url);
         final WebElement emailField = chromeDriver.findElement(By.id("user-create-field-email"));
-        emailField.sendKeys("david@correo.es");
         final WebElement nameField  = chromeDriver.findElement(By.id("user-create-field-name"));
         nameField.sendKeys("Pepe");
         final WebElement lastName1Field = chromeDriver.findElement(By.id("user-create-field-lastname1"));

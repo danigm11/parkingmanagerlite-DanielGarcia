@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.hibernate.NotImplementedYetException;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -99,6 +98,6 @@ public class UserRestController {
     @PatchMapping("/api/users/{id}")
     public ResponseEntity<?> updateUser(@PathVariable long id, @RequestBody UserDao userDao) throws UserDoesNotExistsException {
         this.userService.updateUser(id,userDao);
-        throw new UnsupportedOperationException();
+        return ResponseEntity.ok().build();
     }
 }
