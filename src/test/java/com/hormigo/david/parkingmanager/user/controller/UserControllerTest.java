@@ -13,16 +13,19 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hormigo.david.parkingmanager.user.domain.Role;
 import com.hormigo.david.parkingmanager.user.domain.User;
+import com.hormigo.david.parkingmanager.user.domain.UserDao;
 import com.hormigo.david.parkingmanager.user.service.UserService;
 import com.hormigo.david.parkingmanager.user.service.UserServiceImpl;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
 import java.util.Optional;
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -33,14 +36,29 @@ public class UserControllerTest {
     @MockBean
     private UserService userService;
 
+    @Test
+    public void testPositive() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        UserDao dao = new UserDao("da@correo.es", "David", "Hormigo", "Ramírez", Role.PROFESSOR);
+        String json = mapper.writeValueAsString(dao);
+        when(this.userService.register(any(UserDao.class))).thenReturn(new User("da@correo.es","David","Hormigo","Ramírez",Role.PROFESSOR));
+        this.mockMvc.perform(post("/api/users")
+                    .contentType("application/json").content(json))
+                    .andDo(print())
+                    .andExpect(status().isCreated());
+    }
 
     @Test
     public void testSingleUserRead() throws Exception{
         ObjectMapper mapper = new ObjectMapper();
+
         User user = new User("dhorram948@g.educaand.es","David","Hormigo","Ramírez",Role.PROFESSOR);
-        String json = mapper.writeValueAsString(user);
-        when(userService.getUser(2)).thenReturn(Optional.of(user));
-        this.mockMvc.perform(get("/api/users/2"))
+        ArrayList<User> usuariso = new ArrayList<>();
+        usuariso.add(user);
+        String json = mapper.writeValueAsString(usuariso);
+        json = "{ \"_embedded\": {\"userList\":" + json + "}}";
+        when(userService.getAll()).thenReturn(usuariso);
+        this.mockMvc.perform(get("/api/users"))
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(content().json(json));
